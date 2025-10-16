@@ -12,8 +12,8 @@ const port = process.env.PORT || 8000;
 
 app.use(express.json());
 
-app.use('api/project', projectRouter);
-app.use('api/task', taskRouter);
+app.use('/api/project', projectRouter);
+app.use('/api/task', taskRouter);
 
 app.listen(port, () => {
   connectDb();

@@ -7,6 +7,7 @@ const projectService = {
       const response = await axios.get(
         `${API_BASE_URL}/projects/read-projects?limit=${limit}&offset=${offset}`
       );
+      console.log('response', response.data);
       return response.data;
     } catch (error) {
       if (error.response) {

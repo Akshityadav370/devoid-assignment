@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useProjects } from '../hooks/project';
 import { AppContext } from './useApp';
-import { useMemo } from 'react';
+import { useRef } from 'react';
+import { getOrCreateStorageId } from '../utils';
 
 const AppProvider = ({ children }) => {
   const [currentProject, setCurrentProject] = useState(null);
+  const storageId = useRef(getOrCreateStorageId());
 
   const {
     data,
@@ -13,16 +15,12 @@ const AppProvider = ({ children }) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useProjects();
+  } = useProjects({ storageId });
 
-  const projects = useMemo(() => {
-    if (!data?.pages) return [];
-    return data.pages.flatMap((page) => page.projects);
-  }, [data]);
-
-  const totalProjects = useMemo(() => {
-    return data?.pages?.[0]?.pagination?.total ?? 0;
-  }, [data]);
+  const projects = data?.pages
+    ? data.pages.flatMap((page) => page.projects)
+    : [];
+  const totalProjects = data?.pages?.[0]?.pagination?.total ?? 0;
 
   const handleFetchMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -42,6 +40,7 @@ const AppProvider = ({ children }) => {
         fetchMoreProjects: handleFetchMore,
         isFetchingMoreProjects: isFetchingNextPage,
         totalProjects,
+        storageId: storageId.current,
       }}
     >
       {children}

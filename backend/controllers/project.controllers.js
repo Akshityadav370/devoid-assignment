@@ -3,8 +3,15 @@ import Project from '../models/project.model.js';
 export const addProject = async (req, res) => {
   try {
     const { name, description } = req.body;
+    const storageId = req.headers['x-storage-id'];
 
-    const newProject = await Project.create({ name, description });
+    if (!storageId) {
+      return res.status(400).json({
+        message: 'Storage ID is required',
+      });
+    }
+
+    const newProject = await Project.create({ name, description, storageId });
 
     return res.status(201).json(newProject);
   } catch (error) {
@@ -51,6 +58,14 @@ export const readProjects = async (req, res) => {
   try {
     const { limit = 10, offset = 0 } = req.query;
 
+    const storageId = req.headers['x-storage-id'];
+
+    if (!storageId) {
+      return res.status(400).json({
+        message: 'Storage ID is required',
+      });
+    }
+
     const limitNum = parseInt(limit);
     const offsetNum = parseInt(offset);
 
@@ -61,12 +76,12 @@ export const readProjects = async (req, res) => {
       });
     }
 
-    const projects = await Project.find()
+    const projects = await Project.find({ storageId })
       .skip(offsetNum)
       .limit(limitNum)
       .sort({ createdAt: -1 });
 
-    const totalCount = await Project.countDocuments();
+    const totalCount = await Project.countDocuments({ storageId });
 
     return res.status(200).json({
       projects,
@@ -86,13 +101,24 @@ export const readProjects = async (req, res) => {
 export const readProjectById = async (req, res) => {
   try {
     const projectId = req.params.projectId;
+    const storageId = req.headers['x-storage-id'];
+
     if (!projectId) {
       return res.status(400).json({
         message: 'Project Id not found!.',
       });
     }
 
-    const project = await Project.findById(projectId);
+    if (!storageId) {
+      return res.status(400).json({
+        message: 'Storage Id not found!.',
+      });
+    }
+
+    const project = await Project.findOne({
+      _id: projectId,
+      storageId,
+    });
     if (!project) {
       return res.status(400).json({
         message: 'Project not found!.',

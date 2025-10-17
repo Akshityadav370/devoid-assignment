@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axiosInstance from '.';
 import { API_BASE_URL } from '../utils';
 
 const projectService = {
   fetchProjects: async ({ limit = 10, offset = 0 }) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${API_BASE_URL}/projects/read-projects?limit=${limit}&offset=${offset}`
       );
       //   console.log('response', response.data);
@@ -23,7 +23,7 @@ const projectService = {
   },
   getProjectById: async ({ projectId }) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${API_BASE_URL}/projects/read-project-by-id/${projectId}`
       );
       return response.data;
@@ -41,7 +41,7 @@ const projectService = {
   },
   createProject: async (data) => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_BASE_URL}/projects/add-project`,
         data,
         {
@@ -63,7 +63,7 @@ const projectService = {
   },
   updateProject: async ({ projectId, data }) => {
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${API_BASE_URL}/projects/update-project/${projectId}`,
         data,
         {
@@ -85,7 +85,7 @@ const projectService = {
   },
   deleteProject: async (projectId) => {
     try {
-      const response = await axios.delete(
+      const response = await axiosInstance.delete(
         `${API_BASE_URL}/projects/delete-project/${projectId}`
       );
       return response.data;

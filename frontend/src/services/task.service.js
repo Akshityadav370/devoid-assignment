@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axiosInstance from '.';
 import { API_BASE_URL } from '../utils';
 
 const taskService = {
   fetchTasks: async ({ projectId, limit = 10, offset = 0 }) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${API_BASE_URL}/tasks/read-tasks?projectId=${projectId}&limit=${limit}&offset=${offset}`
       );
       return response.data;
@@ -20,7 +20,7 @@ const taskService = {
   },
   createTask: async ({ projectId, data }) => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_BASE_URL}/tasks/add-task/${projectId}`,
         data,
         {
@@ -40,7 +40,7 @@ const taskService = {
   },
   updateTask: async ({ taskId, data }) => {
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${API_BASE_URL}/tasks/update-task/${taskId}`,
         data,
         {
@@ -60,7 +60,7 @@ const taskService = {
   },
   deleteTask: async ({ taskId }) => {
     try {
-      const response = await axios.delete(
+      const response = await axiosInstance.delete(
         `${API_BASE_URL}/tasks/delete-task/${taskId}`
       );
       return response.data;

@@ -7,6 +7,11 @@ const projectSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    storageId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     description: {
       type: String,
     },

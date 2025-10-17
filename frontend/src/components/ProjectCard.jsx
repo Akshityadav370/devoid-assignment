@@ -2,9 +2,14 @@ import { MdModeEdit } from 'react-icons/md';
 import { useApp } from '../context/useApp';
 import { FaTrash } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
 
 const ProjectCard = ({ project, handleDeleteProject, handleEditProject }) => {
   const { setCurrentProject } = useApp();
+
+  const formatRelativeTime = (dateString) => {
+    return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+  };
 
   return (
     <div
@@ -32,7 +37,10 @@ const ProjectCard = ({ project, handleDeleteProject, handleEditProject }) => {
         <p className='text-sm text-gray-600 mb-3'>{project.description}</p>
       )}
 
-      <div className='w-full flex flex-col items-end'>
+      <div className='w-full flex justify-between items-center'>
+        <p className='text-xs italic text-gray-400'>
+          {formatRelativeTime(project.createdAt)}
+        </p>
         <Link
           key={project._id}
           to={`/project/${project._id}`}

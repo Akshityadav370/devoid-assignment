@@ -83,6 +83,29 @@ export const readProjects = async (req, res) => {
   }
 };
 
+export const readProjectById = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    if (!projectId) {
+      return res.status(400).json({
+        message: 'Project Id not found!.',
+      });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res.status(400).json({
+        message: 'Project not found!.',
+      });
+    }
+
+    return res.status(200).json(project);
+  } catch (error) {
+    console.error('get projectById', error);
+    return res.status(500).json({ message: error });
+  }
+};
+
 export const deleteProject = async (req, res) => {
   try {
     const projectId = req.params.projectId;

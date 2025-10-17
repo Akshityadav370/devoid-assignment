@@ -1,4 +1,5 @@
 import Task from '../models/task.model.js';
+import mongoose from 'mongoose';
 
 export const addTask = async (req, res) => {
   try {

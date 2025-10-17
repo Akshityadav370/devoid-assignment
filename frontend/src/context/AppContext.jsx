@@ -14,7 +14,7 @@ const AppProvider = ({ children }) => {
     hasNextPage,
     isFetchingNextPage,
   } = useProjects();
-  console.log('data', data);
+
   const projects = useMemo(() => {
     if (!data?.pages) return [];
     return data.pages.flatMap((page) => page.projects);

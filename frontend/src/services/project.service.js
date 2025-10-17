@@ -7,12 +7,30 @@ const projectService = {
       const response = await axios.get(
         `${API_BASE_URL}/projects/read-projects?limit=${limit}&offset=${offset}`
       );
-      console.log('response', response.data);
+      //   console.log('response', response.data);
       return response.data;
     } catch (error) {
       if (error.response) {
         throw new Error(
           error.response.data.message || 'Failed to fetch project'
+        );
+      } else if (error.request) {
+        throw new Error('No response from server');
+      } else {
+        throw new Error('Request failed: ' + error.message);
+      }
+    }
+  },
+  getProjectById: async ({ projectId }) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/projects/read-project-by-id/${projectId}`
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw new Error(
+          error.response.data.message || 'Failed to fetch project by Id'
         );
       } else if (error.request) {
         throw new Error('No response from server');

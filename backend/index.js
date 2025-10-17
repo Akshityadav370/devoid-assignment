@@ -21,7 +21,7 @@ app.use(
 app.use(express.json());
 
 app.use('/api/projects', projectRouter);
-app.use('/api/task', taskRouter);
+app.use('/api/tasks', taskRouter);
 
 app.listen(port, () => {
   connectDb();

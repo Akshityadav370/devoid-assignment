@@ -1,6 +1,7 @@
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import projectService from '../../services/project.service';
@@ -17,6 +18,14 @@ const useProjects = () => {
       return undefined;
     },
     initialPageParam: 0,
+  });
+};
+
+const useGetProjectById = (projectId, currentProject) => {
+  return useQuery({
+    queryKey: ['project', projectId],
+    queryFn: () => projectService.getProjectById({ projectId }),
+    enabled: !!projectId && !currentProject,
   });
 };
 
@@ -54,4 +63,10 @@ const useDeleteProject = () => {
   });
 };
 
-export { useProjects, useCreateProject, useUpdateProject, useDeleteProject };
+export {
+  useProjects,
+  useCreateProject,
+  useUpdateProject,
+  useDeleteProject,
+  useGetProjectById,
+};

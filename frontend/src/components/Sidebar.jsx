@@ -134,7 +134,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           <div className='p-4 border-t border-gray-200'>
             <Link
               to='/'
-              className='flex items-center gap-4 justify-center w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
+              className='flex items-center gap-2 justify-center w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
             >
               <FaHome size={20} />
               Home

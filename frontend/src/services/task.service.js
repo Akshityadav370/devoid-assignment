@@ -58,7 +58,7 @@ const taskService = {
       }
     }
   },
-  deleteTask: async (taskId) => {
+  deleteTask: async ({ taskId }) => {
     try {
       const response = await axios.delete(
         `${API_BASE_URL}/tasks/delete-task/${taskId}`

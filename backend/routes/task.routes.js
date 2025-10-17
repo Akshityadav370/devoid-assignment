@@ -8,8 +8,8 @@ import {
 
 const taskRouter = express.Router();
 
-taskRouter.post('/add-task', addTask);
-taskRouter.patch('/update-task/:taskId', editTask);
+taskRouter.post('/add-task/:projectId', addTask);
+taskRouter.put('/update-task/:taskId', editTask);
 taskRouter.get('/read-tasks', readTasks);
 taskRouter.delete('/delete-task/:taskId', deleteTask);
 

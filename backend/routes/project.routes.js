@@ -9,7 +9,7 @@ import {
 const projectRouter = express.Router();
 
 projectRouter.post('/add-project', addProject);
-projectRouter.patch('/update-project/:projectId', editProject);
+projectRouter.put('/update-project/:projectId', editProject);
 projectRouter.get('/read-projects', readProjects);
 projectRouter.delete('/delete-project/:projectId', deleteProject);
 

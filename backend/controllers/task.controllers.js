@@ -56,7 +56,7 @@ export const editTask = async (req, res) => {
 
 export const readTasks = async (req, res) => {
   try {
-    const { limit = 10, offset = 0 } = req.query;
+    const { projectId, limit = 10, offset = 0, status } = req.query;
 
     const limitNum = parseInt(limit);
     const offsetNum = parseInt(offset);
@@ -68,25 +68,69 @@ export const readTasks = async (req, res) => {
       });
     }
 
-    const tasks = await Task.find()
-      .skip(offsetNum)
-      .limit(limitNum)
-      .sort({ createdAt: -1 });
+    const baseQuery = {};
+    if (projectId) {
+      if (!mongoose.Types.ObjectId.isValid(projectId)) {
+        return res.status(400).json({ message: 'Invalid projectId' });
+      }
+      baseQuery.project = projectId;
+    }
+    if (status && ['Todo', 'InProgress', 'Done'].includes(status)) {
+      baseQuery.status = status;
+    }
 
-    const totalCount = await Task.countDocuments();
+    const tasks = await Task.find(baseQuery)
+      .populate('project', 'name description')
+      .sort({ createdAt: -1 })
+      .skip(offsetNum)
+      .limit(limitNum);
+
+    const totalCount = await Task.countDocuments(baseQuery);
+
+    // Segregate tasks by status
+    const segregatedTasks = {
+      Todo: tasks.filter((task) => task.status === 'Todo'),
+      InProgress: tasks.filter((task) => task.status === 'InProgress'),
+      Done: tasks.filter((task) => task.status === 'Done'),
+    };
+
+    // Get counts for each status (from the entire dataset, not just paginated)
+    const statusCounts = await Task.aggregate([
+      { $match: baseQuery },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const counts = {
+      Todo: 0,
+      InProgress: 0,
+      Done: 0,
+      Total: totalCount,
+    };
+
+    statusCounts.forEach((item) => {
+      counts[item._id] = item.count;
+    });
 
     return res.status(200).json({
-      tasks,
+      tasks: segregatedTasks,
+      counts,
       pagination: {
         limit: limitNum,
         offset: offsetNum,
         total: totalCount,
         hasMore: offsetNum + limitNum < totalCount,
       },
+      ...(projectId && { projectId }),
+      ...(status && { status }),
     });
   } catch (error) {
     console.error('read tasks', error);
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 

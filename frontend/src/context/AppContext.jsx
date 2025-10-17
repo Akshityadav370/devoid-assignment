@@ -1,26 +1,34 @@
 import { useState } from 'react';
 import { useProjects } from '../hooks/project';
-import { useEffect } from 'react';
 import { AppContext } from './useApp';
+import { useMemo } from 'react';
 
 const AppProvider = ({ children }) => {
   const [currentProject, setCurrentProject] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [hasMoreProjects, setHasMoreProjects] = useState(false);
-  const [offset, setOffset] = useState(0);
 
   const {
     data,
     isLoading: loadingProjects,
     error: errorFetchingProjects,
-  } = useProjects({ limit: 10, offset });
-
-  useEffect(() => {
-    if (data && data.projects) {
-      setProjects((prev) => [...prev, ...data.projects]);
-      setHasMoreProjects(data.pagination.hasMore);
-    }
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useProjects();
+  console.log('data', data);
+  const projects = useMemo(() => {
+    if (!data?.pages) return [];
+    return data.pages.flatMap((page) => page.projects);
   }, [data]);
+
+  const totalProjects = useMemo(() => {
+    return data?.pages?.[0]?.pagination?.total ?? 0;
+  }, [data]);
+
+  const handleFetchMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   return (
     <AppContext.Provider
@@ -28,11 +36,12 @@ const AppProvider = ({ children }) => {
         currentProject,
         setCurrentProject,
         projects,
-        setProjects,
         loadingProjects,
         errorFetchingProjects,
-        setOffset,
-        hasMoreProjects,
+        hasMoreProjects: hasNextPage,
+        fetchMoreProjects: handleFetchMore,
+        isFetchingMoreProjects: isFetchingNextPage,
+        totalProjects,
       }}
     >
       {children}

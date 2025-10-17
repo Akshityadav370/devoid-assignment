@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../context/useApp';
+import { FaCaretDown, FaHome } from 'react-icons/fa';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
@@ -9,6 +10,9 @@ const Sidebar = ({ isOpen, onClose }) => {
     errorFetchingProjects,
     setCurrentProject,
     hasMoreProjects,
+    fetchMoreProjects,
+    isFetchingMoreProjects,
+    totalProjects,
   } = useApp();
 
   const handleProjectClick = (project) => {
@@ -35,7 +39,14 @@ const Sidebar = ({ isOpen, onClose }) => {
       >
         <div className='flex flex-col h-full'>
           <div className='flex items-center justify-between p-4 border-b border-gray-200'>
-            <h2 className='text-lg font-semibold text-gray-900'>Projects</h2>
+            <div>
+              <h2 className='text-lg font-semibold text-gray-900'>Projects</h2>
+              {totalProjects > 0 && (
+                <p className='text-xs text-gray-500 mt-0.5'>
+                  {projects.length} of {totalProjects}
+                </p>
+              )}
+            </div>
             <button
               onClick={onClose}
               className='lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-600'
@@ -103,10 +114,18 @@ const Sidebar = ({ isOpen, onClose }) => {
             {hasMoreProjects && (
               <div className='mt-4'>
                 <button
-                  onClick={() => {}}
-                  className='w-full py-2 px-4 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors'
+                  onClick={fetchMoreProjects}
+                  disabled={isFetchingMoreProjects}
+                  className='w-full py-2 px-4 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
                 >
-                  ⌄ More
+                  {isFetchingMoreProjects ? (
+                    'Loading...'
+                  ) : (
+                    <div className='flex w-full gap-2 justify-center'>
+                      <FaCaretDown size={20} />
+                      <p>Load More</p>
+                    </div>
+                  )}
                 </button>
               </div>
             )}
@@ -115,9 +134,10 @@ const Sidebar = ({ isOpen, onClose }) => {
           <div className='p-4 border-t border-gray-200'>
             <Link
               to='/'
-              className='flex items-center justify-center w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
+              className='flex items-center gap-4 justify-center w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
             >
-              New Project
+              <FaHome size={20} />
+              Home
             </Link>
           </div>
         </div>

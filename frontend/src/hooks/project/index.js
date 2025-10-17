@@ -1,10 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import projectService from '../../services/project.service';
 
-const useProjects = (options = {}) => {
-  return useQuery({
-    queryKey: ['projects', options],
-    queryFn: () => projectService.fetchProjects(options),
+const useProjects = () => {
+  return useInfiniteQuery({
+    queryKey: ['projects'],
+    queryFn: ({ pageParam = 0 }) =>
+      projectService.fetchProjects({ limit: 10, offset: pageParam }),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pagination.hasMore) {
+        return lastPage.pagination.offset + lastPage.projects.length;
+      }
+      return undefined;
+    },
+    initialPageParam: 0,
   });
 };
 

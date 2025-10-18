@@ -54,7 +54,7 @@ const TaskColumn = ({
   };
 
   return (
-    <div className='flex-1 min-w-[300px]'>
+    <div className='flex-1 max-w-[300px]'>
       <div className={`rounded-lg p-4 ${getColumnBackground(status)}`}>
         <div
           className={`flex items-center justify-between mb-4 p-3 rounded-lg ${getHeaderColor(

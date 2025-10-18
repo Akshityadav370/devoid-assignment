@@ -15,6 +15,19 @@ const TaskCard = ({ task, onEdit, onDelete, onDragStart }) => {
     }
   };
 
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'High':
+        return 'bg-red-500';
+      case 'Medium':
+        return 'bg-yellow-500';
+      case 'Low':
+        return 'bg-green-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
   return (
     <div
       draggable
@@ -44,8 +57,22 @@ const TaskCard = ({ task, onEdit, onDelete, onDragStart }) => {
         </div>
       </div>
       {task.description && (
-        <p className='text-sm text-gray-600 line-clamp-2'>{task.description}</p>
+        <p className='text-sm text-gray-600 line-clamp-2 mb-2'>
+          {task.description}
+        </p>
       )}
+      <div className='flex items-center justify-end pt-2 border-t border-gray-200'>
+        <div className='flex items-center gap-2'>
+          <div
+            className={`w-2 h-2 rounded-full ${getPriorityColor(
+              task.priority
+            )}`}
+          ></div>
+          <span className='text-xs font-medium text-gray-700'>
+            {task.priority}
+          </span>
+        </div>
+      </div>
     </div>
   );
 };

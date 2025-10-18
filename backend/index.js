@@ -4,6 +4,7 @@ import connectDb from './config/db.js';
 import projectRouter from './routes/project.routes.js';
 import taskRouter from './routes/task.routes.js';
 import cors from 'cors';
+import mongoose from 'mongoose';
 
 dotenv.config();
 

@@ -43,7 +43,9 @@ const Layout = () => {
           </div>
         </header>
 
-        <main className='flex-1 overflow-auto p-2 lg:p-6'>{routes}</main>
+        <main className='flex-1 overflow-auto p-2 lg:p-6 relative'>
+          {routes}
+        </main>
       </div>
     </div>
   );

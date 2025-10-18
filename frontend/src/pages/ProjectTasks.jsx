@@ -13,12 +13,16 @@ import { FaPlus } from 'react-icons/fa';
 import TaskColumn from '../components/TaskColumn';
 import { useGetProjectById } from '../hooks/project';
 import { useEffect } from 'react';
+import Chatbox from '../components/Chatbox';
+import { useMemo } from 'react';
+import ChatboxToggle from '../components/ChatboxToggle';
 
 const ProjectTasks = () => {
   const { projectId } = useParams();
   const { currentProject, setCurrentProject } = useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [chatBoxOpen, setChatBoxOpen] = useState(false);
 
   const { data: tasksData, isLoading } = useTasks(
     currentProject?._id || projectId
@@ -38,7 +42,19 @@ const ProjectTasks = () => {
     }
   }, [projectData, setCurrentProject, currentProject]);
 
-  const tasks = tasksData?.tasks || { Todo: [], InProgress: [], Done: [] };
+  const tasks = useMemo(
+    () => tasksData?.tasks || { Todo: [], InProgress: [], Done: [] },
+    [tasksData?.tasks]
+  );
+
+  const projectContext = useMemo(
+    () => ({
+      name: currentProject?.name,
+      description: currentProject?.description,
+      tasks: tasks,
+    }),
+    [currentProject, tasks]
+  );
 
   const handleAddTask = () => {
     setEditingTask(null);
@@ -177,6 +193,16 @@ const ProjectTasks = () => {
           onCancel={() => setModalOpen(false)}
         />
       </Modal>
+      <Chatbox
+        isOpen={chatBoxOpen}
+        onClose={() => setChatBoxOpen(false)}
+        projectId={currentProject?._id}
+        projectContext={projectContext}
+      />
+      <ChatboxToggle
+        onClick={() => setChatBoxOpen(!chatBoxOpen)}
+        isOpen={chatBoxOpen}
+      />
     </div>
   );
 };

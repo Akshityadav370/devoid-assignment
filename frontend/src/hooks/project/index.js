@@ -5,6 +5,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import projectService from '../../services/project.service';
+import { chatStorageService } from '../../services/chat.service';
 
 const useProjects = () => {
   return useInfiniteQuery({
@@ -57,8 +58,9 @@ const useDeleteProject = () => {
 
   return useMutation({
     mutationFn: projectService.deleteProject,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+      chatStorageService.clearMessages(data._id);
     },
   });
 };

@@ -37,9 +37,9 @@ const Layout = () => {
                 />
               </svg>
             </button>
-            <h1 className='text-lg font-semibold text-gray-900'>
+            {/* <h1 className='text-lg font-semibold text-gray-900'>
               Project Manager
-            </h1>
+            </h1> */}
           </div>
         </header>
 

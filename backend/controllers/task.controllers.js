@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 export const addTask = async (req, res) => {
   try {
-    const { title, description, status } = req.body;
+    const { title, description, status, priority } = req.body;
     const projectId = req.params.projectId;
 
     const newTask = await Task.create({
@@ -11,6 +11,7 @@ export const addTask = async (req, res) => {
       description,
       status,
       project: projectId,
+      priority,
     });
 
     return res.status(201).json(newTask);
@@ -23,12 +24,13 @@ export const addTask = async (req, res) => {
 export const editTask = async (req, res) => {
   try {
     const taskId = req.params.taskId;
-    const { title, description, status } = req.body;
+    const { title, description, status, priority } = req.body;
 
     const updateData = {};
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (status !== undefined) updateData.status = status;
+    if (priority !== undefined) updateData.priority = priority;
 
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({

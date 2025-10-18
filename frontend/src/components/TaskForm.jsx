@@ -4,10 +4,11 @@ const TaskForm = ({ task, onSubmit, onCancel, defaultStatus = 'Todo' }) => {
   const [title, setTitle] = useState(task?.title || '');
   const [description, setDescription] = useState(task?.description || '');
   const [status, setStatus] = useState(task?.status || defaultStatus);
+  const [priority, setPriority] = useState(task?.priority || 'Low');
 
   const handleSubmit = () => {
     if (title.trim()) {
-      onSubmit({ title, description, status });
+      onSubmit({ title, description, status, priority });
     }
   };
 
@@ -43,6 +44,18 @@ const TaskForm = ({ task, onSubmit, onCancel, defaultStatus = 'Todo' }) => {
           <option value='Todo'>To Do</option>
           <option value='InProgress'>In Progress</option>
           <option value='Done'>Done</option>
+        </select>
+      </div>
+      <div className='mb-4'>
+        <label className='block text-sm font-medium mb-1'>Priority</label>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+        >
+          <option value='Low'>Low</option>
+          <option value='Medium'>Medium</option>
+          <option value='High'>High</option>
         </select>
       </div>
       <div className='flex gap-2 justify-end'>

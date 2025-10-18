@@ -5,6 +5,7 @@ import { chatStorageService } from '../services/chat.service';
 import { Send, Sparkles, Trash2, X } from 'lucide-react';
 import { generateText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import ReactMarkdown from 'react-markdown';
 
 const Chatbox = ({ isOpen, onClose, projectId, projectContext }) => {
   const [messages, setMessages] = useState([]);
@@ -83,6 +84,14 @@ const Chatbox = ({ isOpen, onClose, projectId, projectContext }) => {
 - Suggesting task management strategies
 - Answering questions about specific tasks
 - General project management advice
+
+IMPORTANT: Format your responses using Markdown for better readability. Use:
+- **Bold** for important points
+- *Italics* for emphasis
+- Bullet points with - or *
+- Numbered lists for steps
+- ## Headers for sections
+- \`code\` for technical terms
 
 Be concise, helpful, and professional in your responses.`;
 
@@ -180,6 +189,46 @@ Be concise, helpful, and professional in your responses.`;
     }
   };
 
+  // Custom components for ReactMarkdown
+  const MarkdownComponents = {
+    p: ({ children }) => <p className='mb-2 last:mb-0'>{children}</p>,
+    ul: ({ children }) => (
+      <ul className='list-disc list-inside mb-2 space-y-1'>{children}</ul>
+    ),
+    ol: ({ children }) => (
+      <ol className='list-decimal list-inside mb-2 space-y-1'>{children}</ol>
+    ),
+    li: ({ children }) => <li className='text-sm'>{children}</li>,
+    strong: ({ children }) => (
+      <strong className='font-semibold'>{children}</strong>
+    ),
+    em: ({ children }) => <em className='italic'>{children}</em>,
+    code: ({ children }) => (
+      <code className='bg-gray-100 px-1 py-0.5 rounded text-sm font-mono'>
+        {children}
+      </code>
+    ),
+    pre: ({ children }) => (
+      <pre className='bg-gray-100 p-2 rounded-lg overflow-x-auto text-sm my-2'>
+        {children}
+      </pre>
+    ),
+    h1: ({ children }) => (
+      <h1 className='text-lg font-bold mt-3 mb-2 first:mt-0'>{children}</h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className='text-md font-semibold mt-3 mb-2 first:mt-0'>{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className='text-sm font-semibold mt-2 mb-1 first:mt-0'>{children}</h3>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className='border-l-4 border-gray-300 pl-3 my-2 italic text-gray-600'>
+        {children}
+      </blockquote>
+    ),
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -232,7 +281,7 @@ Be concise, helpful, and professional in your responses.`;
                 }`}
               >
                 <div
-                  className={`max-w-[75%] rounded-lg px-4 py-2 ${
+                  className={`max-w-[85%] rounded-lg px-4 py-3 ${
                     message.role === 'user'
                       ? 'bg-blue-500 text-white rounded-br-none'
                       : message.isError
@@ -240,10 +289,18 @@ Be concise, helpful, and professional in your responses.`;
                       : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
                   }`}
                 >
-                  <p className='text-sm whitespace-pre-wrap break-words'>
-                    {message.content}
-                  </p>
-                  <span className='text-xs opacity-70 mt-1 block'>
+                  {message.role === 'user' ? (
+                    <p className='text-sm whitespace-pre-wrap break-words'>
+                      {message.content}
+                    </p>
+                  ) : (
+                    <div className='text-sm prose prose-sm max-w-none'>
+                      <ReactMarkdown components={MarkdownComponents}>
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                  <span className='text-xs opacity-70 mt-2 block'>
                     {message.timestamp.toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -255,7 +312,7 @@ Be concise, helpful, and professional in your responses.`;
 
             {isLoading && (
               <div className='flex justify-start'>
-                <div className='bg-white border border-gray-200 rounded-lg rounded-bl-none px-4 py-2 shadow-sm'>
+                <div className='bg-white border border-gray-200 rounded-lg rounded-bl-none px-4 py-3 shadow-sm'>
                   <div className='flex items-center gap-2'>
                     <div className='flex gap-1'>
                       <span

@@ -31,6 +31,7 @@ app.get('/api/health', (req, res) => {
     status: 'OK',
     database:
       mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
+    uri: process.env.MONGODB_URL,
   });
 });
 

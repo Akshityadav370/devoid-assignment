@@ -20,10 +20,20 @@ app.use(
 
 app.use(express.json());
 
+connectDb().catch(console.error);
+
 app.use('/api/projects', projectRouter);
 app.use('/api/tasks', taskRouter);
 
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    database:
+      mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
+  });
+});
+
 app.listen(port, () => {
-  connectDb();
+  //   connectDb();
   console.log(`*******Server started at ${port} ********`);
 });
